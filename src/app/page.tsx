@@ -1,7 +1,10 @@
 import { UserButton } from "@clerk/nextjs";
 import { ProfileLoadingSkeleton } from "@/components/profile-loading-skeleton";
+import { addUserToDb } from "@/server/actions";
 
-export default function HomePage() {
+export default async function HomePage() {
+  await addUserToDb();
+
   return (
     <main className="h-screen w-screen">
       <header className="flex items-center justify-between p-4 border-b">
