@@ -23,10 +23,11 @@ type TodoProps = {
     id: InferSelectModel<typeof todos>["id"],
     isCompleted: boolean
   ) => void;
-  isCompleted?: boolean;
 };
 
 function Todo(props: TodoProps) {
+  const isCompleted = props.todo.completed;
+
   function onEdit() {
     props.onEdit(props.todo.id);
   }
@@ -36,18 +37,18 @@ function Todo(props: TodoProps) {
   }
 
   function onComplete() {
-    props.onComplete(props.todo.id, !props.isCompleted);
+    props.onComplete(props.todo.id, !isCompleted);
   }
 
   return (
     <div
       className={`bg-slate-800 mb-4 p-4 rounded-md ${
-        props.isCompleted ? "opacity-50" : ""
+        isCompleted ? "opacity-50" : ""
       }`}
     >
       <div className="flex justify-between gap-4 items-center mb-2">
         <p className="font-semibold truncate">{props.todo.title}</p>
-        {!props?.isCompleted && (
+        {!isCompleted && (
           <div className="h-2 flex items-center gap-2">
             <button onClick={() => onEdit()}>
               <EditIcon />
@@ -72,7 +73,7 @@ function Todo(props: TodoProps) {
           onClick={onComplete}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          Mark as {props.isCompleted ? "incomplete" : "complete"}
+          Mark as {isCompleted ? "incomplete" : "complete"}
         </button>
       </div>
     </div>
