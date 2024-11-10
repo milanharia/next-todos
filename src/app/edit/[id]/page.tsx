@@ -1,16 +1,19 @@
 import { TodoForm } from "@/components/todo-form";
 import { Header } from "@/components/header";
+import { Suspense } from "react";
 
 export default async function EditTodoModal({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
   return (
     <>
       <Header />
-      <TodoForm id={+id} />
+      <Suspense>
+        <TodoForm id={+id} />
+      </Suspense>
     </>
   );
 }
