@@ -2,6 +2,7 @@ import { UserButton } from "@clerk/nextjs";
 import { ProfileLoadingSkeleton } from "@/components/profile-loading-skeleton";
 import { addUserToDb } from "@/server/actions";
 import { TodoList } from "@/components/todo-list";
+import Link from "next/link";
 
 const mockTodos = [
   {
@@ -34,7 +35,7 @@ const mockTodos = [
 ];
 
 export default async function HomePage() {
-  await addUserToDb();
+  // await addUserToDb();
 
   return (
     <main className="">
@@ -47,9 +48,12 @@ export default async function HomePage() {
       </header>
       <section className="grid grid-cols-12 gap-4 min-h-[calc(100vh-65px)]">
         <div className="col-span-3 p-4 border-r ">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded mb-4 w-full text-left">
+          <Link
+            href="/create"
+            className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded mb-4 w-full text-left"
+          >
             Create Todo
-          </button>
+          </Link>
           <input
             type="text"
             className="bg-slate-800 mb-4 p-4 rounded-md w-full"
