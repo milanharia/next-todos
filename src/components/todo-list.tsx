@@ -4,6 +4,7 @@ import { CalendarIcon, CloseIcon, EditIcon } from "@/app/icons";
 import { completeTodo, deleteTodo } from "@/server/actions";
 import { todos } from "@/server/db/schema";
 import { InferSelectModel } from "drizzle-orm";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface TodoListProps {
@@ -101,6 +102,7 @@ function TodoColumn(props: {
   emptyMessage?: string;
 }) {
   const isListEmpty = props.todos.length === 0;
+  const router = useRouter();
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">{props.title}</h2>
@@ -116,7 +118,9 @@ function TodoColumn(props: {
               key={todo.id}
               todo={todo}
               onEdit={(id) => {
-                console.log(id);
+                router.push(
+                  `/edit/${id}?title=${todo.title}&content=${todo.content}`
+                );
               }}
               onClose={async (id) => {
                 deleteTodo(id);

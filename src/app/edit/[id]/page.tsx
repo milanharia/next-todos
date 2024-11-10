@@ -1,11 +1,15 @@
 import { TodoForm } from "@/components/todo-form";
 import { Header } from "@/components/header";
 
-export default function CreateTodoPage() {
+export default async function EditTodoModal({
+  params,
+}: {
+  params: { id: string };
+}) {
   return (
     <>
       <Header />
-      <TodoForm />
+      <TodoForm id={Number(params.id)} />
     </>
   );
 }

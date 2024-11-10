@@ -28,7 +28,7 @@ export function Modal({ children }: { children: React.ReactNode }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-slate-800 rounded-md relative"
+        className="bg-slate-800 rounded-md relative -translate-y-1/4"
       >
         <button
           onClick={onDismiss}
