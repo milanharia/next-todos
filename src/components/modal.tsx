@@ -22,10 +22,14 @@ export function Modal({ children }: { children: React.ReactNode }) {
   return createPortal(
     <dialog
       ref={dialogRef}
-      className="absolute h-screen w-screen bg-black/80 flex items-center justify-center"
+      className="absolute max-h-[100vh] max-w-[100vw] bg-black/80 m-0 flex items-center justify-center"
       onClose={onDismiss}
+      onClick={() => onDismiss()}
     >
-      <div className="bg-slate-800 rounded-md relative">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-800 rounded-md relative"
+      >
         <button
           onClick={onDismiss}
           className="absolute top-4 right-4 text-white"
