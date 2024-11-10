@@ -16,6 +16,10 @@ type TodoProps = {
   todo: InferSelectModel<typeof todos>;
   onEdit: (id: InferSelectModel<typeof todos>["id"]) => void;
   onClose: (id: InferSelectModel<typeof todos>["id"]) => void;
+  onComplete: (
+    id: InferSelectModel<typeof todos>["id"],
+    isCompleted: boolean
+  ) => void;
   isCompleted?: boolean;
 };
 
@@ -26,6 +30,10 @@ function Todo(props: TodoProps) {
 
   function onClose() {
     props.onClose(props.todo.id);
+  }
+
+  function onComplete() {
+    props.onComplete(props.todo.id, !props.isCompleted);
   }
 
   return (
@@ -50,10 +58,20 @@ function Todo(props: TodoProps) {
       <hr className="mb-4" />
       <p className="mb-4">{props.todo.content}</p>
 
-      <p className="text-sm flex items-center gap-2">
-        <CalendarIcon />
-        <span>{formatDate(props.todo.updatedAt || props.todo.createdAt)}</span>
-      </p>
+      <div className="flex justify-between items-center">
+        <p className="text-sm flex items-center gap-2">
+          <CalendarIcon />
+          <span>
+            {formatDate(props.todo.updatedAt || props.todo.createdAt)}
+          </span>
+        </p>
+        <button
+          onClick={onComplete}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Mark as {props.isCompleted ? "incomplete" : "complete"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -65,18 +83,23 @@ export function TodoList(props: TodoListProps) {
         <h2 className="text-2xl font-semibold mb-4">Todo List</h2>
 
         <div>
-          {props.todos.map((todo) => (
-            <Todo
-              key={todo.id}
-              todo={todo}
-              onEdit={(id) => {
-                console.log(id);
-              }}
-              onClose={(id) => {
-                console.log(id);
-              }}
-            />
-          ))}
+          {props.todos
+            .filter((todo) => !todo.completed)
+            .map((todo) => (
+              <Todo
+                key={todo.id}
+                todo={todo}
+                onEdit={(id) => {
+                  console.log(id);
+                }}
+                onClose={(id) => {
+                  console.log(id);
+                }}
+                onComplete={(id) => {
+                  console.log(id);
+                }}
+              />
+            ))}
         </div>
       </div>
 
@@ -85,19 +108,24 @@ export function TodoList(props: TodoListProps) {
           <h2 className="text-2xl font-semibold mb-4">Completed</h2>
         </div>
         <div>
-          {props.todos.map((todo) => (
-            <Todo
-              key={todo.id}
-              todo={todo}
-              isCompleted
-              onEdit={(id) => {
-                console.log(id);
-              }}
-              onClose={(id) => {
-                console.log(id);
-              }}
-            />
-          ))}
+          {props.todos
+            .filter((todo) => todo.completed)
+            .map((todo) => (
+              <Todo
+                key={todo.id}
+                todo={todo}
+                isCompleted
+                onEdit={(id) => {
+                  console.log(id);
+                }}
+                onClose={(id) => {
+                  console.log(id);
+                }}
+                onComplete={(id) => {
+                  console.log(id);
+                }}
+              />
+            ))}
         </div>
       </div>
     </div>

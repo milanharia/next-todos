@@ -18,7 +18,7 @@ const mockTodos = [
     authorId: "author",
     title: "Todo 2",
     content: "Todo 2 content",
-    completed: false,
+    completed: true,
     createdAt: new Date(),
     updatedAt: null,
   },
@@ -39,7 +39,7 @@ export default async function HomePage() {
   return (
     <main className="">
       <header className="flex items-center justify-between p-4 border-b gap-4">
-        <h1 className="text-2xl">Next Todos</h1>
+        <h1 className="text-2xl font-bold">Next Todos</h1>
         <div className="relative w-[28px] h-[28px]">
           <UserButton />
           <ProfileLoadingSkeleton />
