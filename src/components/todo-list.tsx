@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarIcon, CloseIcon, EditIcon } from "@/app/icons";
-import { completeTodo } from "@/server/actions";
+import { completeTodo, deleteTodo } from "@/server/actions";
 import { todos } from "@/server/db/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { toast } from "sonner";
@@ -118,8 +118,8 @@ function TodoColumn(props: {
               onEdit={(id) => {
                 console.log(id);
               }}
-              onClose={(id) => {
-                console.log(id);
+              onClose={async (id) => {
+                deleteTodo(id);
               }}
               onComplete={async (id) => {
                 const res = await completeTodo(id);

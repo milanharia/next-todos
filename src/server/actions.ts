@@ -89,3 +89,44 @@ export async function completeTodo(todoId: number) {
     return { status: "error", message: "Something went wrong" };
   }
 }
+
+export async function deleteTodo(todoId: number) {
+  try {
+    const schema = z.object({
+      id: z.number(),
+    });
+    const parse = schema.safeParse({
+      id: todoId,
+    });
+
+    if (!parse.success) {
+      return {
+        status: "error",
+        message: "Id is required",
+      };
+    }
+
+    const { id } = parse.data;
+
+    const user = await currentUser();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    const isUsersTodo = await db.query.todos.findFirst({
+      where: (todo, { eq, and }) =>
+        and(eq(todo.authorId, user.id), eq(todo.id, id)),
+    });
+
+    if (!isUsersTodo) {
+      throw new Error("Unauthorized");
+    }
+
+    await db.delete(todos).where(eq(todos.id, id));
+
+    revalidatePath("/");
+    return { status: "success", message: "Todo deleted successfully" };
+  } catch {
+    return { status: "error", message: "Something went wrong" };
+  }
+}
