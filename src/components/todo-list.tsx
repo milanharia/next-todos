@@ -1,8 +1,10 @@
 "use client";
 
 import { CalendarIcon, CloseIcon, EditIcon } from "@/app/icons";
+import { completeTodo } from "@/server/actions";
 import { todos } from "@/server/db/schema";
 import { InferSelectModel } from "drizzle-orm";
+import { toast } from "sonner";
 
 interface TodoListProps {
   todos: InferSelectModel<typeof todos>[];
@@ -119,8 +121,11 @@ function TodoColumn(props: {
               onClose={(id) => {
                 console.log(id);
               }}
-              onComplete={(id) => {
-                console.log(id);
+              onComplete={async (id) => {
+                const res = await completeTodo(id);
+                if (res.status === "error") {
+                  toast.error(res.message, { position: "bottom-center" });
+                }
               }}
             />
           ))}
