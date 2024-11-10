@@ -1,25 +1,46 @@
-import "server-only";
+"use server";
 
 import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/server/db";
-import { users } from "@/server/db/schema";
+import { todos } from "@/server/db/schema";
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-// Add the user to database if does not exist
-export async function addUserToDb() {
-  const user = await currentUser();
-  if (!user || !user?.id) return;
-
-  const userExists = !!(await db.query.users.findFirst({
-    where: (model, { eq }) => eq(model.id, user.id),
-  }));
-
-  if (!userExists) {
-    await db.insert(users).values({
-      id: user.id,
-      firstName: user.firstName || "",
-      lastName: user.lastName || "",
-      email: user.emailAddresses[0].emailAddress,
-      imageUrl: user.imageUrl ?? undefined,
+export async function createTodo(_initialState: any, data: FormData) {
+  try {
+    const schema = z.object({
+      title: z.string().min(1),
+      content: z.string().nullable(),
     });
+    const parse = schema.safeParse({
+      title: data.get("title"),
+      content: data.get("content"),
+    });
+
+    if (!parse.success) {
+      return {
+        status: "error",
+        message: "Title is required",
+      };
+    }
+
+    const { title, content } = parse.data;
+    const user = await currentUser();
+
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    await db.insert(todos).values({
+      authorId: user.id,
+      title,
+      content,
+    });
+
+    revalidatePath("/");
+    return { status: "success", message: "Todo created successfully" };
+  } catch (error) {
+    return { status: "error", message: "Something went wrong" };
   }
 }

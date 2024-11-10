@@ -79,54 +79,51 @@ function Todo(props: TodoProps) {
 export function TodoList(props: TodoListProps) {
   return (
     <div className="grid grid-cols-2 gap-8 w-full">
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">Todo List</h2>
+      <TodoColumn
+        title="Todo List"
+        todos={props.todos.filter((todo) => !todo.completed)}
+        emptyMessage="Create a todo to get started"
+      />
+      <TodoColumn
+        title="Completed"
+        todos={props.todos.filter((todo) => todo.completed)}
+        emptyMessage="View your completed todos here"
+      />
+    </div>
+  );
+}
 
-        <div>
-          {props.todos
-            .filter((todo) => !todo.completed)
-            .map((todo) => (
-              <Todo
-                key={todo.id}
-                todo={todo}
-                onEdit={(id) => {
-                  console.log(id);
-                }}
-                onClose={(id) => {
-                  console.log(id);
-                }}
-                onComplete={(id) => {
-                  console.log(id);
-                }}
-              />
-            ))}
-        </div>
-      </div>
-
+function TodoColumn(props: {
+  todos: InferSelectModel<typeof todos>[];
+  title: string;
+  emptyMessage?: string;
+}) {
+  const isListEmpty = props.todos.length === 0;
+  return (
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">{props.title}</h2>
       <div>
-        <div>
-          <h2 className="text-2xl font-semibold mb-4">Completed</h2>
-        </div>
-        <div>
-          {props.todos
-            .filter((todo) => todo.completed)
-            .map((todo) => (
-              <Todo
-                key={todo.id}
-                todo={todo}
-                isCompleted
-                onEdit={(id) => {
-                  console.log(id);
-                }}
-                onClose={(id) => {
-                  console.log(id);
-                }}
-                onComplete={(id) => {
-                  console.log(id);
-                }}
-              />
-            ))}
-        </div>
+        {isListEmpty && (
+          <p className="text-slate-400">
+            {props.emptyMessage || "No todos found"}
+          </p>
+        )}
+        {!isListEmpty &&
+          props.todos.map((todo) => (
+            <Todo
+              key={todo.id}
+              todo={todo}
+              onEdit={(id) => {
+                console.log(id);
+              }}
+              onClose={(id) => {
+                console.log(id);
+              }}
+              onComplete={(id) => {
+                console.log(id);
+              }}
+            />
+          ))}
       </div>
     </div>
   );

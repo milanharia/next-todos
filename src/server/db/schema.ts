@@ -27,7 +27,7 @@ export const todos = createTable("todos", {
     .references(() => users.id)
     .notNull(),
   title: varchar("title").notNull(),
-  content: varchar("content").notNull(),
+  content: varchar("content"),
   completed: boolean("completed").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at"),

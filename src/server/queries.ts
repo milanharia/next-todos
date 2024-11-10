@@ -12,6 +12,7 @@ export async function getTodos() {
 
   const todos = await db.query.todos.findMany({
     where: (model, { eq }) => eq(model.authorId, user.id),
+    orderBy: (model, { desc }) => desc(model.createdAt),
   });
 
   return todos;
