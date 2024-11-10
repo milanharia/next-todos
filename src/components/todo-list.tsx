@@ -16,6 +16,7 @@ type TodoProps = {
   todo: InferSelectModel<typeof todos>;
   onEdit: (id: InferSelectModel<typeof todos>["id"]) => void;
   onClose: (id: InferSelectModel<typeof todos>["id"]) => void;
+  isCompleted?: boolean;
 };
 
 function Todo(props: TodoProps) {
@@ -28,17 +29,23 @@ function Todo(props: TodoProps) {
   }
 
   return (
-    <div className="bg-slate-800 mb-4 p-4 rounded-md">
+    <div
+      className={`bg-slate-800 mb-4 p-4 rounded-md ${
+        props.isCompleted ? "opacity-50" : ""
+      }`}
+    >
       <div className="flex justify-between gap-4 items-center mb-2">
         <p className="font-semibold truncate">{props.todo.title}</p>
-        <div className="h-2 flex items-center gap-2">
-          <button onClick={() => onEdit()}>
-            <EditIcon />
-          </button>
-          <button onClick={onClose}>
-            <CloseIcon />
-          </button>
-        </div>
+        {!props?.isCompleted && (
+          <div className="h-2 flex items-center gap-2">
+            <button onClick={() => onEdit()}>
+              <EditIcon />
+            </button>
+            <button onClick={onClose}>
+              <CloseIcon />
+            </button>
+          </div>
+        )}
       </div>
       <hr className="mb-4" />
       <p className="mb-4">{props.todo.content}</p>
@@ -53,7 +60,7 @@ function Todo(props: TodoProps) {
 
 export function TodoList(props: TodoListProps) {
   return (
-    <div className="grid grid-cols-2 gap-4 w-full max-w-screen-md">
+    <div className="grid grid-cols-2 gap-8 w-full">
       <div>
         <h2 className="text-2xl font-semibold mb-4">Todo List</h2>
 
@@ -75,13 +82,14 @@ export function TodoList(props: TodoListProps) {
 
       <div>
         <div>
-          <h2>Completed</h2>
+          <h2 className="text-2xl font-semibold mb-4">Completed</h2>
         </div>
         <div>
           {props.todos.map((todo) => (
             <Todo
               key={todo.id}
               todo={todo}
+              isCompleted
               onEdit={(id) => {
                 console.log(id);
               }}
