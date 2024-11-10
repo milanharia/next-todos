@@ -5,9 +5,14 @@ import { db } from "@/server/db";
 import { todos } from "@/server/db/schema";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-export async function createTodo(_initialState: any, data: FormData) {
+export async function createTodo(
+  _initialState: {
+    status: string;
+    message: string;
+  },
+  data: FormData
+) {
   try {
     const schema = z.object({
       title: z.string().min(1),
@@ -40,7 +45,7 @@ export async function createTodo(_initialState: any, data: FormData) {
 
     revalidatePath("/");
     return { status: "success", message: "Todo created successfully" };
-  } catch (error) {
+  } catch {
     return { status: "error", message: "Something went wrong" };
   }
 }
