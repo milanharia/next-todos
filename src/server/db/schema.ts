@@ -29,7 +29,7 @@ export const todos = createTable("todos", {
   title: varchar("title").notNull(),
   content: varchar("content").notNull(),
   completed: boolean("completed").notNull().default(false),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at"),
 });
 
