@@ -6,10 +6,11 @@ export default async function EditTodoModal({
 }: {
   params: { id: string };
 }) {
+  const { id } = await params;
   return (
     <>
       <Header />
-      <TodoForm id={Number(params.id)} />
+      <TodoForm id={+id} />
     </>
   );
 }

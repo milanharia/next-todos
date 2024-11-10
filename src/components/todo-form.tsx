@@ -31,7 +31,7 @@ export function TodoForm(props: { id?: number }) {
     if (state.status === "error") {
       toast.error(state.message, { position: "bottom-center" });
     }
-  }, [state]);
+  }, [state, props.id, router]);
 
   return (
     <div className="p-4 text-white max-w-xl mx-auto">
