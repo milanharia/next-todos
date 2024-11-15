@@ -1,15 +1,10 @@
 import "server-only";
 
-import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/server/db";
+import { getCurrentUserOrThrow } from "./utils";
 
 export async function getTodos() {
-  const user = await currentUser();
-
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
-
+  const user = await getCurrentUserOrThrow();
   const todos = await db.query.todos.findMany({
     where: (model, { eq }) => eq(model.authorId, user.id),
     orderBy: (model, { desc }) => desc(model.createdAt),

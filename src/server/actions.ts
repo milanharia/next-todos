@@ -1,11 +1,12 @@
 "use server";
 
-import { currentUser } from "@clerk/nextjs/server";
 import { db } from "@/server/db";
 import { todos } from "@/server/db/schema";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
+import { auth } from "@/server/auth";
+import { getCurrentUserOrThrow } from "./utils";
 
 export async function createTodo(
   _initialState: {
@@ -32,11 +33,7 @@ export async function createTodo(
     }
 
     const { title, content } = parse.data;
-    const user = await currentUser();
-
-    if (!user) {
-      throw new Error("Unauthorized");
-    }
+    const user = await getCurrentUserOrThrow();
 
     await db.insert(todos).values({
       authorId: user.id,
@@ -69,10 +66,7 @@ export async function completeTodo(todoId: number) {
 
     const { id } = parse.data;
 
-    const user = await currentUser();
-    if (!user) {
-      throw new Error("Unauthorized");
-    }
+    const user = await getCurrentUserOrThrow();
 
     const isUsersTodo = await db.query.todos.findFirst({
       where: (todo, { eq, and }) =>
@@ -108,10 +102,7 @@ export async function deleteTodo(todoId: number) {
 
     const { id } = parse.data;
 
-    const user = await currentUser();
-    if (!user) {
-      throw new Error("Unauthorized");
-    }
+    const user = await getCurrentUserOrThrow();
 
     const isUsersTodo = await db.query.todos.findFirst({
       where: (todo, { eq, and }) =>
@@ -159,11 +150,7 @@ export async function updateTodo(
     }
 
     const { id, title, content } = parse.data;
-    const user = await currentUser();
-
-    if (!user) {
-      throw new Error("Unauthorized");
-    }
+    const user = await getCurrentUserOrThrow();
 
     const isUsersTodo = await db.query.todos.findFirst({
       where: (todo, { eq, and }) =>

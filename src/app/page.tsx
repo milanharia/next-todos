@@ -1,11 +1,16 @@
-import { addUserToDb } from "@/server/add-user";
 import { TodoList } from "@/components/todo-list";
 import Link from "next/link";
 import { getTodos } from "@/server/queries";
 import { Header } from "@/components/header";
+import { auth } from "@/server/auth";
+import { redirect } from "next/navigation";
 
 export default async function HomePage() {
-  await addUserToDb();
+  const session = await auth();
+  if (!session) {
+    return redirect("/login");
+  }
+
   const todos = await getTodos();
 
   return (

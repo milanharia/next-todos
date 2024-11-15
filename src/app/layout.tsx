@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { ClerkProvider } from "@clerk/nextjs";
+
 import { Toaster } from "sonner";
 
 import "./globals.css";
@@ -29,17 +29,15 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
-        >
-          {children}
-          {modal}
-          <Toaster />
-          <div id="modal-root" />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
+      >
+        {children}
+        {modal}
+        <Toaster />
+        <div id="modal-root" />
+      </body>
+    </html>
   );
 }
