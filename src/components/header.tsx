@@ -4,11 +4,11 @@ import Link from "next/link";
 export async function Header() {
   const session = await auth();
   return (
-    <header className="flex items-center justify-between p-4 border-b gap-4">
+    <header className=" bg-black flex items-center justify-between p-4 border-b gap-4">
       <Link href="/" className="text-2xl font-bold">
         Next Todos
       </Link>
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-4 md:gap-8">
         {session?.user && (
           <div className="flex items-center gap-2">
             <img
@@ -17,7 +17,9 @@ export async function Header() {
               alt={`${session?.user?.name}'s profile picture`}
             />
 
-            <p className="font-semibold ">{session?.user?.name}</p>
+            <p className="hidden sm:block font-semibold ">
+              {session?.user?.name}
+            </p>
           </div>
         )}
         <form

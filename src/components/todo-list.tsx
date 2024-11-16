@@ -7,6 +7,7 @@ import { InferSelectModel } from "drizzle-orm";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { SearchBar } from "./search-bar";
 
 interface TodoListProps {
   todos: InferSelectModel<typeof todos>[];
@@ -63,7 +64,7 @@ function Todo(props: TodoProps) {
       <hr className="mb-4" />
       <p className="mb-4">{props.todo.content}</p>
 
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center gap-4">
         <p className="text-sm flex items-center gap-2">
           <CalendarIcon />
           <span>
@@ -72,7 +73,7 @@ function Todo(props: TodoProps) {
         </p>
         <button
           onClick={onComplete}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="block bg-blue-500 hover:bg-blue-700 text-white mr-auto xl:mr-0 text-left font-bold py-2 px-4 rounded"
         >
           Mark as {isCompleted ? "incomplete" : "complete"}
         </button>
@@ -108,7 +109,10 @@ export function TodoList(props: TodoListProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-8 w-full">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
+      <div className="md:hidden">
+        <SearchBar />
+      </div>
       <TodoColumn
         title="Todo List"
         todos={todos.filter((todo) => !todo.completed)}
