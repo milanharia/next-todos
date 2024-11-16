@@ -67,14 +67,17 @@ export async function completeTodo(todoId: number) {
 
     const user = await getCurrentUserOrThrow();
 
-    const isUsersTodo = await db.query.todos.findFirst({
+    const todo = await db.query.todos.findFirst({
       where: (todo, { eq, and }) =>
         and(eq(todo.authorId, user.id), eq(todo.id, id)),
     });
-    if (!isUsersTodo) {
+    if (!todo) {
       throw new Error("Unauthorized");
     }
-    await db.update(todos).set({ completed: true }).where(eq(todos.id, id));
+    await db
+      .update(todos)
+      .set({ completed: !todo.completed })
+      .where(eq(todos.id, id));
 
     revalidatePath("/");
     return { status: "success", message: "Todo completed successfully" };

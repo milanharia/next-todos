@@ -102,18 +102,25 @@ export function TodoList(props: TodoListProps) {
     setTodos(newTodos);
   }
 
+  function onDelete(id: number) {
+    const newTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(newTodos);
+  }
+
   return (
     <div className="grid grid-cols-2 gap-8 w-full">
       <TodoColumn
         title="Todo List"
         todos={todos.filter((todo) => !todo.completed)}
         onComplete={onComplete}
+        onDelete={onDelete}
         emptyMessage="Create a todo to get started"
       />
       <TodoColumn
         title="Completed"
         todos={todos.filter((todo) => todo.completed)}
         onComplete={onComplete}
+        onDelete={onDelete}
         emptyMessage="View your completed todos here"
       />
     </div>
@@ -124,6 +131,7 @@ function TodoColumn(props: {
   todos: InferSelectModel<typeof todos>[];
   title: string;
   onComplete: (id: number) => void;
+  onDelete: (id: number) => void;
   emptyMessage?: string;
 }) {
   const isListEmpty = props.todos.length === 0;
@@ -148,6 +156,7 @@ function TodoColumn(props: {
                 );
               }}
               onClose={async (id) => {
+                props.onDelete(id);
                 deleteTodo(id);
               }}
               onComplete={async (id) => {
