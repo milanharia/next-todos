@@ -5,6 +5,7 @@ import { completeTodo, deleteTodo } from "@/server/actions";
 import { todos } from "@/server/db/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface TodoListProps {
@@ -81,16 +82,38 @@ function Todo(props: TodoProps) {
 }
 
 export function TodoList(props: TodoListProps) {
+  const [todos, setTodos] = useState(props.todos);
+
+  // Update the todo list when the props change (sync with server state)
+  useEffect(() => {
+    setTodos(props.todos);
+  }, [props.todos]);
+
+  function onComplete(id: number) {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          completed: !todo.completed,
+        };
+      }
+      return todo;
+    });
+    setTodos(newTodos);
+  }
+
   return (
     <div className="grid grid-cols-2 gap-8 w-full">
       <TodoColumn
         title="Todo List"
-        todos={props.todos.filter((todo) => !todo.completed)}
+        todos={todos.filter((todo) => !todo.completed)}
+        onComplete={onComplete}
         emptyMessage="Create a todo to get started"
       />
       <TodoColumn
         title="Completed"
-        todos={props.todos.filter((todo) => todo.completed)}
+        todos={todos.filter((todo) => todo.completed)}
+        onComplete={onComplete}
         emptyMessage="View your completed todos here"
       />
     </div>
@@ -100,6 +123,7 @@ export function TodoList(props: TodoListProps) {
 function TodoColumn(props: {
   todos: InferSelectModel<typeof todos>[];
   title: string;
+  onComplete: (id: number) => void;
   emptyMessage?: string;
 }) {
   const isListEmpty = props.todos.length === 0;
@@ -127,6 +151,7 @@ function TodoColumn(props: {
                 deleteTodo(id);
               }}
               onComplete={async (id) => {
+                props.onComplete(id);
                 const res = await completeTodo(id);
                 if (res.status === "error") {
                   toast.error(res.message, { position: "bottom-center" });
