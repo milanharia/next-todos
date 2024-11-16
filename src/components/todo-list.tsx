@@ -4,7 +4,7 @@ import { CalendarIcon, CloseIcon, EditIcon } from "@/app/icons";
 import { completeTodo, deleteTodo } from "@/server/actions";
 import { todos } from "@/server/db/schema";
 import { InferSelectModel } from "drizzle-orm";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SearchBar } from "./search-bar";
@@ -84,11 +84,27 @@ function Todo(props: TodoProps) {
 
 export function TodoList(props: TodoListProps) {
   const [todos, setTodos] = useState(props.todos);
+  const params = useSearchParams();
+  const searchQuery = params.get("query");
 
   // Update the todo list when the props change (sync with server state)
   useEffect(() => {
     setTodos(props.todos);
   }, [props.todos]);
+
+  // Filter the todo list based on the search query
+  useEffect(() => {
+    if (searchQuery) {
+      const newTodos = props.todos.filter(
+        (todo) =>
+          todo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          todo?.content?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setTodos(newTodos);
+    } else {
+      setTodos(props.todos);
+    }
+  }, [searchQuery, props.todos]);
 
   function onComplete(id: number) {
     const newTodos = todos.map((todo) => {
@@ -140,13 +156,17 @@ function TodoColumn(props: {
 }) {
   const isListEmpty = props.todos.length === 0;
   const router = useRouter();
+  const params = useSearchParams();
+  const searchQuery = params.get("query");
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">{props.title}</h2>
       <div>
         {isListEmpty && (
           <p className="text-slate-400">
-            {props.emptyMessage || "No todos found"}
+            {searchQuery
+              ? "No results found"
+              : props.emptyMessage || "No todos found"}
           </p>
         )}
         {!isListEmpty &&
