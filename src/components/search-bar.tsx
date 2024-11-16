@@ -1,6 +1,5 @@
 "use client";
 import { SearchIcon } from "@/app/icons";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export function SearchBar() {

@@ -53,7 +53,7 @@ export default async function HomePage() {
   );
 }
 
-export async function TodoSection() {
+async function TodoSection() {
   const todos = await getTodos();
 
   return <TodoList todos={todos} />;
