@@ -7,7 +7,7 @@ import { accounts, sessions, users, verificationTokens } from "./db/schema";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db, {
     usersTable: users,
-    // @ts-expect-error
+    // @ts-expect-error - types are incorrect in beta version
     accountsTable: accounts,
     sessionsTable: sessions,
     verificationTokensTable: verificationTokens,
