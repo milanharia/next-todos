@@ -4,14 +4,14 @@ import { getTodos } from "@/server/queries";
 import { Header } from "@/components/header";
 import { auth } from "@/server/auth";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { Spinner } from "./icons";
 
 export default async function HomePage() {
   const session = await auth();
   if (!session) {
     return redirect("/login");
   }
-
-  const todos = await getTodos();
 
   return (
     <main>
@@ -31,9 +31,23 @@ export default async function HomePage() {
           />
         </div>
         <div className="col-span-9 overflow-y-scroll p-4">
-          <TodoList todos={todos} />
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center w-full h-full">
+                <Spinner />
+              </div>
+            }
+          >
+            <TodoSection />
+          </Suspense>
         </div>
       </section>
     </main>
   );
+}
+
+export async function TodoSection() {
+  const todos = await getTodos();
+
+  return <TodoList todos={todos} />;
 }

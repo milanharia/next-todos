@@ -5,7 +5,6 @@ import { todos } from "@/server/db/schema";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
-import { auth } from "@/server/auth";
 import { getCurrentUserOrThrow } from "./utils";
 
 export async function createTodo(
@@ -142,7 +141,6 @@ export async function updateTodo(
     });
 
     if (!parse.success) {
-      console.log(parse.error.issues);
       return {
         status: "error",
         message: "The provided data is invalid",
